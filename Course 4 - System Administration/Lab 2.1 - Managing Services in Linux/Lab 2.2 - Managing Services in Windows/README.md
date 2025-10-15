@@ -1,4 +1,4 @@
-# Lab 2.1: Managing System Services in Linux
+# Lab 2.2: Managing System Services in Linux
 
 **Course:** System Administration and IT Infrastructure Services (Course 4, Module 2)
 
