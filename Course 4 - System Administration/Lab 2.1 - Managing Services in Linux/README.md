@@ -33,8 +33,7 @@ The process began with learning how to list and interpret the status of running 
 
 **Output of Running Services:**
 
-// *** Ensure you upload your screenshot named '01_rsyslog_check.png' to the 'assets' folder. ***
-![Screenshot: Showing the successful logging verification.](assets/01_rsyslog_check.png)
+(assets/01_rsyslog_check.png)
 
 ### 2. Troubleshooting and Fixing the `cups` Service
 
@@ -49,7 +48,7 @@ The `cups` (Common Unix Printing System) service was found to be in a **failed s
 
 The repair was successful, and the `cupsd` service status was verified to be running.
 
-// *** Ensure you upload your screenshot named '02_cups_fix.png' to the 'assets' folder. ***
+
 ![Screenshot: Terminal showing the 'cupsd is running' output.](assets/02_cups_fix.png)
 
 ### 3. Configuring Services: Restart vs. Reload
@@ -68,5 +67,5 @@ This lab successfully demonstrated the ability to monitor, control, troubleshoot
 
 // *** THIS SECTION IS THE BEST TARGET FOR YOUR WEBSITE LINK: `#final-results-and-conclusion` ***
 
-// *** Ensure you upload your screenshot named '03_final_reload.png' to the 'assets' folder. ***
+
 ![Screenshot: Final status check proving the cups service remained running after the reload action.](assets/03_final_reload.png)
