@@ -1,0 +1,283 @@
+# Lab 2.3: Utilizing Active Directory
+**Course:** System Administration and IT Infrastructure Services - Module 4
+---
+## Lab Overview
+The objective of this hands-on lab was to demonstrate proficiency in **Active Directory administration**, a core tool for managing Windows domain environments. Tasks included installing and configuring Active Directory Domain Services, creating and managing users and groups, modifying group memberships, and implementing Group Policy Objects (GPOs). This showcases essential skills for centralized management of users, computers, and policies across a Windows network.
+
+## Skills Demonstrated
+* **Active Directory Installation:** Deploying and configuring Active Directory Domain Services using PowerShell automation.
+* **User Management:** Creating new user accounts, setting passwords, and enforcing security policies.
+* **Group Management:** Creating security groups and managing hierarchical group structures.
+* **Membership Administration:** Adding and removing users from groups, understanding group inheritance.
+* **Group Policy Configuration:** Creating and editing GPOs to enforce standardized desktop configurations across organizational units.
+* **Administrative Tools Proficiency:** Using Active Directory Administrative Center (ADAC) and Group Policy Management Console.
+
+---
+
+## Step-by-Step Execution
+
+### 1. Installing Active Directory Domain Services
+The lab began with installing Active Directory Domain Services, a complex process automated through PowerShell scripts to ensure consistent configuration.
+
+**Opening PowerShell as Administrator:**
+
+![Screenshot: Windows Start menu showing how to run PowerShell as Administrator](assets/01_powershell_admin.png)
+
+**Installation Command:**
+```powershell
+C:\Qwiklabs\ADSetup\active_directory_install.ps1
+```
+
+This script:
+- Installs Active Directory Domain Services role
+- Configures initial domain settings
+- Takes several minutes to complete
+- Triggers an automatic system restart
+
+**Post-Installation Configuration:**
+After the system restarted and reconnected, Active Directory required additional configuration:
+
+```powershell
+C:\Qwiklabs\ADSetup\configure_active_directory.ps1
+```
+
+This script completed the domain setup and prepared the environment for user and group management.
+
+### 2. Accessing Active Directory Administrative Center
+Once installation was complete, the lab utilized the Active Directory Administrative Center (ADAC) for graphical management of domain resources.
+
+**Launching ADAC:**
+The application was accessed by searching for "active" in the Windows Start menu.
+
+![Screenshot: Windows Search showing Active Directory Administrative Center](assets/02_adac_search.png)
+
+**ADAC Interface:**
+The Administrative Center provides a modern interface for managing users, groups, computers, and organizational units within the domain.
+
+![Screenshot: Active Directory Administrative Center main interface showing example.com domain](assets/03_adac_interface.png)
+
+### 3. Creating a New User Account
+The first administrative task was creating a new user account for "Alex" in the domain.
+
+**Navigation Steps:**
+1. Clicked on **example (local)** domain entry
+2. Scrolled down and double-clicked **Users** container
+3. In the Tasks panel, selected **New → User**
+
+**User Creation Form:**
+
+![Screenshot: Create User dialog showing required fields for Alex](assets/04_create_user.png)
+
+**Required Information:**
+- **First name:** Alex
+- **User UPN logon:** alex@example
+- **User SamAccountName logon:** alex
+
+The password fields were left empty initially, which would later require attention before the account could be enabled.
+
+### 4. Setting User Password and Enabling Account
+After creating the user, the account appeared as "Alex (Disabled)" because no password had been set.
+
+**Attempted Enablement:**
+Right-clicking on Alex and selecting "Enable" produced an error:
+
+![Screenshot: Error message indicating password does not meet domain requirements](assets/05_enable_error.png)
+
+**Error Explanation:**
+Active Directory requires strong passwords that meet domain complexity requirements. An empty password fails these requirements, preventing account activation.
+
+**Setting a Secure Password:**
+
+![Screenshot: Tasks menu with Reset password option highlighted](assets/06_reset_password_menu.png)
+
+Using the **Reset password** option, a strong password was set with the following configuration:
+
+![Screenshot: Reset Password dialog with "User must change password at next logon" checked](assets/07_reset_password.png)
+
+**Security Best Practice:**
+The "User must change password at next logon" option ensures that:
+- The system administrator does not retain knowledge of the user's permanent password
+- The user establishes their own secure credentials upon first login
+- Password ownership transfers to the end user immediately
+
+After setting a compliant password, the account was successfully enabled.
+
+### 5. Creating Security Groups
+The lab demonstrated creating a new security group called "Python Developers" to organize users by role or function.
+
+**Group Creation Process:**
+From the Tasks panel in the Users container, selected **New → Group**.
+
+![Screenshot: New menu with Group option selected](assets/08_new_group.png)
+
+**Group Configuration:**
+
+![Screenshot: Create Group dialog for Python Developers](assets/09_create_group.png)
+
+**Group Settings:**
+- **Group name:** Python Developers
+- **Group (SamAccountName):** Python Developers
+- **Group type:** Security (used for permissions)
+- **Group scope:** Global (accessible throughout the domain)
+
+Additional fields like Description and Notes are optional but useful for documentation purposes.
+
+### 6. Managing Group Hierarchies
+After creating the Python Developers group, it was added to an existing parent group called "Developers" to establish a hierarchical group structure.
+
+**Adding to Parent Group:**
+Right-clicked on **Python Developers** and selected **Add to another group**.
+
+![Screenshot: Context menu showing "Add to another group" option](assets/10_add_to_group.png)
+
+**Specifying Parent Group:**
+
+![Screenshot: Select Groups dialog with "Developers" entered](assets/11_select_developers.png)
+
+Using the **Check Names** button verified that "Developers" exists in the domain (text becomes underlined when valid).
+
+**Group Hierarchy Benefit:**
+This structure allows permissions granted to "Developers" to automatically flow down to "Python Developers" members through group nesting.
+
+### 7. Adding Members to Groups
+With the Python Developers group created and nested under Developers, the next step was adding Alex as a member.
+
+**Method 1: Through Group Properties**
+Double-clicked **Python Developers** to open its properties, then navigated to the **Members** section.
+
+![Screenshot: Python Developers group properties showing Members section](assets/12_group_members.png)
+
+**Adding Alex:**
+
+![Screenshot: Select Users dialog with "Alex" entered in the object names field](assets/13_add_alex.png)
+
+Clicked **Add**, entered "Alex", verified with **Check Names**, and clicked **OK** to complete the addition.
+
+**Result:**
+Alex is now a member of Python Developers, which is itself a member of Developers, giving Alex inherited permissions from both groups.
+
+### 8. Modifying User Group Memberships
+The final user management task involved moving an existing user (Alosha) from the Java Developers group to the Python Developers group.
+
+**Opening User Properties:**
+Located and double-clicked the user **Alosha** in the Users list, then selected the **Member Of** section.
+
+![Screenshot: Alosha user properties showing Member Of tab with Java Developers membership](assets/14_alosha_memberships.png)
+
+**Current Memberships:**
+- Domain Users (default for all users)
+- Java Developers (to be removed)
+
+**Removing from Java Developers:**
+Selected "Java Developers" and clicked the **Remove** button.
+
+**Adding to Python Developers:**
+
+![Screenshot: Select Groups dialog with "Python Developers" entered for Alosha](assets/15_add_python_dev.png)
+
+Clicked **Add**, entered "Python Developers", verified the name, and saved the changes.
+
+**Final Result:**
+Alosha's group memberships now reflect their transition to Python development work, ensuring proper access to team resources.
+
+### 9. Introduction to Group Policy Management
+Group Policy Objects (GPOs) allow administrators to enforce standardized configurations across multiple computers in a domain or organizational unit.
+
+**Launching Group Policy Management:**
+Searched for "group" in the Windows Start menu and opened **Group Policy Management**.
+
+**GPO Creation:**
+Navigated to the **Developers** Organizational Unit in the domain tree, right-clicked, and selected **Create a GPO in this domain, and Link it here**.
+
+![Screenshot: Group Policy Management showing right-click menu for Developers OU](assets/16_create_gpo.png)
+
+**Naming the Policy:**
+
+![Screenshot: New GPO dialog with "New Wallpaper" entered as the name](assets/17_name_gpo.png)
+
+The policy was named "New Wallpaper" to describe its purpose clearly.
+
+### 10. Editing Group Policy Objects
+After creating the GPO, it needed to be configured to enforce the desired desktop wallpaper setting.
+
+**Opening the Policy Editor:**
+Right-clicked on **New Wallpaper** policy and selected **Edit**.
+
+![Screenshot: Context menu showing Edit option for New Wallpaper GPO](assets/18_edit_gpo.png)
+
+**Navigating to Desktop Settings:**
+In the Group Policy Management Editor, followed the path:
+**User Configuration → Policies → Administrative Templates → Desktop → Desktop**
+
+This location contains all desktop-related policy settings that apply to users.
+
+### 11. Configuring the Desktop Wallpaper Policy
+Within the Desktop settings folder, located and configured the **Desktop Wallpaper** setting.
+
+**Policy Configuration:**
+Double-clicked "Desktop Wallpaper" to open its properties, then:
+1. Selected **Enabled** to activate the policy
+2. Entered the wallpaper path: `C:\Qwiklabs\wallpaper.jpg`
+3. Clicked **OK** to save
+
+**Policy Behavior:**
+- When enabled, this GPO forces all users in the Developers OU to use the specified wallpaper
+- The path can be local (as shown) or a network UNC path for centralized distribution
+- Users cannot change their wallpaper while this policy is enforced
+
+**Verification:**
+Returned to Group Policy Management and viewed the **Settings** tab to confirm the policy configuration was saved correctly.
+
+---
+
+## Key Concepts and Best Practices
+
+### Active Directory Hierarchy
+```
+example.com (Domain)
+├── Domain Controllers OU
+├── Computers Container
+├── Users Container
+│   ├── Domain Users (Group)
+│   ├── Developers (Group)
+│   │   ├── Java Developers (Nested Group)
+│   │   └── Python Developers (Nested Group)
+│   │       └── Alex (User)
+│   └── Alosha (User)
+└── Developers OU
+    └── New Wallpaper GPO
+```
+
+### Security Best Practices Demonstrated
+| Practice | Implementation | Benefit |
+| :--- | :--- | :--- |
+| **Strong Password Policy** | Enforce complexity requirements | Prevents unauthorized access |
+| **Password Change on First Logon** | User must reset password after creation | Admin never knows user's working password |
+| **Group-Based Access Control** | Use security groups instead of individual permissions | Simplifies permission management |
+| **Group Nesting** | Python Developers → Developers | Inherited permissions reduce administrative overhead |
+| **Organizational Units** | Separate OUs for different departments | Enables targeted GPO application |
+
+### Administrative Tools Comparison
+| Tool | Primary Use | Best For |
+| :--- | :--- | :--- |
+| **Active Directory Administrative Center** | Modern user/group management interface | Day-to-day user administration tasks |
+| **Group Policy Management Console** | Creating and managing GPOs | Enforcing standardized configurations |
+| **Active Directory Users and Computers** | Traditional management interface | Advanced attribute editing |
+| **PowerShell** | Scripted automation | Bulk operations and automation |
+
+---
+
+## Final Results and Conclusion
+This lab successfully demonstrated comprehensive Active Directory administration skills essential for managing enterprise Windows environments. Key accomplishments included:
+
+✅ **Domain Services Deployment:** Installed and configured Active Directory Domain Services  
+✅ **User Account Management:** Created users with proper security settings  
+✅ **Password Policy Enforcement:** Implemented domain password requirements  
+✅ **Group Organization:** Created hierarchical security groups  
+✅ **Membership Administration:** Modified user group memberships to reflect organizational changes  
+✅ **Group Policy Implementation:** Created and configured GPOs to enforce desktop standards  
+✅ **Organizational Unit Management:** Applied policies to specific OUs for targeted deployment  
+
+**Key Takeaway:** Active Directory provides centralized, scalable management of users, computers, and policies across Windows networks. The combination of security groups for permissions and GPOs for configuration enforcement creates a powerful administrative framework that reduces manual work and ensures consistency across the enterprise.
+
+These skills form the foundation for administering Windows-based IT infrastructures of any size, from small businesses to large enterprise environments with thousands of users and computers.
