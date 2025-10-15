@@ -65,7 +65,7 @@ This section demonstrated how to modify a service configuration and the differen
 
 This lab successfully demonstrated the ability to monitor, control, troubleshoot, and reconfigure system services in a Linux environment. These are non-negotiable, day-to-day skills for a System Administrator.
 
-// *** THIS SECTION IS THE BEST TARGET FOR YOUR WEBSITE LINK: `#final-results-and-conclusion` ***
+
 
 
 ![Screenshot: Final status check proving the cups service remained running after the reload action.](assets/03_final_reload.png)
